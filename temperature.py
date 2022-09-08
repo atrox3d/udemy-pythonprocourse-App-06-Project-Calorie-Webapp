@@ -23,7 +23,7 @@ class Temperature:
 
     def get(self):
         url = f'{self.base_url}/{self.country}/{self.city}'                     # compose url
-        log.info('url: %s', url)
+        log.debug('url: %s', url)
 
         try:
             response = requests.get(url)                                        # try to get page
@@ -32,25 +32,26 @@ class Temperature:
             log.fatal(re)
             exit(1)
         finally:
-            log.info("response.status_code: %s", response.status_code)
-            log.info("response.encoding: %s", response.encoding)
+            log.debug("response.status_code: %s", response.status_code)
+            log.debug("response.encoding: %s", response.encoding)
             pass
 
         extractor = Extractor.from_yaml_file('temperature.yaml')                # create extractor from yaml file
-        log.info("extractor.config: %s", extractor.config)
+        log.debug("extractor.config: %s", extractor.config)
 
         value = extractor.extract(response.text)['temp']                        # get value from dict
-        log.info("value: %s", value)
+        log.debug("value: %s", value)
 
         nbsp = u'\xa0'                                                          # define unicode &nbsp;
         value = value[:value.index(nbsp)]                                       # extract before &nbsp;
-        log.info(f"value: '{value}'")
+        log.debug(f"value: '{value}'")
 
         value = float(value)                                                    # convert value to float
-        log.info(value)
+        log.debug(value)
 
         return value
 
 
 if __name__ == '__main__':
-    Temperature('italy', 'turin').get()
+    temperature = Temperature('italy', 'turin').get()
+    print(f'temperature: {temperature}')
