@@ -1,4 +1,5 @@
 import requests
+import json
 from selectorlib import Extractor
 
 import logging
@@ -16,17 +17,31 @@ class Temperature:
     Represent a temperature value extracted from the
     https://timeanddate.com/weather webpage
     """
-    def __init__(self, country, city, base_url='https://timeanddate.com/weather'):
+
+    base_url = 'https://timeanddate.com/weather'
+    json_headers_path = 'headers_for_scraping.json'
+    yaml_path =  'temperature.yaml'
+
+    def __init__(self, country, city):
         self.country = country
         self.city = city
-        self.base_url = base_url
 
-    def get(self):
+    def _build_url(self):
         url = f'{self.base_url}/{self.country}/{self.city}'                     # compose url
         log.debug('url: %s', url)
+        return url
+
+    def _load_headers(self):
+        with open(self.json_headers_path) as fp:
+            headers = json.load(fp)
+        return headers
+
+    def _scrape(self, use_headers=False):
+        url = self._build_url()
+        headers = self._load_headers() if use_headers else None
 
         try:
-            response = requests.get(url)                                        # try to get page
+            response = requests.get(url, headers=headers)                       # try to get page
             response.raise_for_status()                                         # raise exception on error
         except requests.exceptions.RequestException as re:
             log.fatal(re)
@@ -36,14 +51,19 @@ class Temperature:
             log.debug("response.encoding: %s", response.encoding)
             pass
 
-        extractor = Extractor.from_yaml_file('temperature.yaml')                # create extractor from yaml file
+        extractor = Extractor.from_yaml_file(self.yaml_path)                    # create extractor from yaml file
         log.debug("extractor.config: %s", extractor.config)
 
-        value = extractor.extract(response.text)['temp']                        # get value from dict
-        log.debug("value: %s", value)
+        full_content = response.text                                            # get page as text
+        raw_value = extractor.extract(full_content)                             # get dict
+        log.debug("raw_value: %s", raw_value)
+        return raw_value
 
+    def get(self):
+        scraped_content = self._scrape()                                        # scrape temp
+        temp = scraped_content['temp']                                          # get value
         nbsp = u'\xa0'                                                          # define unicode &nbsp;
-        value = value[:value.index(nbsp)]                                       # extract before &nbsp;
+        value = temp[:temp.index(nbsp)]                                         # extract before &nbsp;
         log.debug(f"value: '{value}'")
 
         value = float(value)                                                    # convert value to float
