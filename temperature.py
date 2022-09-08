@@ -1,15 +1,15 @@
 import requests
 import json
+import logging
 from selectorlib import Extractor
 
-import logging
-logging.basicConfig(
+logging.basicConfig(                                                            # configure root logger
     level=logging.INFO,
     format="%(asctime)s | %(module)-15s | %(levelname)-10s | %(message)s",
     datefmt='%Y/%m/%d %H:%M:%S',
     # stream=sys.stdout
 )
-log = logging.getLogger(__name__)
+log = logging.getLogger(__name__)                                               # get local logger
 
 
 class Temperature:
@@ -18,9 +18,9 @@ class Temperature:
     https://timeanddate.com/weather webpage
     """
 
-    base_url = 'https://timeanddate.com/weather'
+    base_url = 'https://timeanddate.com/weather'                                # class variables
     json_headers_path = 'headers_for_scraping.json'
-    yaml_path =  'temperature.yaml'
+    yaml_path = 'temperature.yaml'
 
     def __init__(self, country, city):
         self.country = country
@@ -32,7 +32,7 @@ class Temperature:
         return url
 
     def _load_headers(self):
-        with open(self.json_headers_path) as fp:
+        with open(self.json_headers_path) as fp:                                # load headers from json into dict
             headers = json.load(fp)
         return headers
 
@@ -61,17 +61,23 @@ class Temperature:
 
     def get(self):
         scraped_content = self._scrape()                                        # scrape temp
+        log.debug(f"scraped_content: '{scraped_content}'")
+
         temp = scraped_content['temp']                                          # get value
+        log.debug(f"temp: '{temp}'")
+
         # nbsp = u'\xa0'                                                          # define unicode &nbsp;
         # value = temp[:temp.index(nbsp)]                                         # extract before &nbsp;
-        # log.debug(f"value: '{value}'")
+
         value, unit = temp.split()                                              # split at &nbsp;
+        log.debug(f"value, unit: '{(value, unit)}'")
+
         value = float(value.strip())                                            # convert stripped value to float
-        log.debug(value)
+        log.debug(f"value: '{value}'")
 
         return value
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':                                                      # test the class
     temperature = Temperature('italy', 'turin').get()
     print(f'temperature: {temperature}')
