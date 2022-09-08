@@ -62,11 +62,11 @@ class Temperature:
     def get(self):
         scraped_content = self._scrape()                                        # scrape temp
         temp = scraped_content['temp']                                          # get value
-        nbsp = u'\xa0'                                                          # define unicode &nbsp;
-        value = temp[:temp.index(nbsp)]                                         # extract before &nbsp;
-        log.debug(f"value: '{value}'")
-
-        value = float(value)                                                    # convert value to float
+        # nbsp = u'\xa0'                                                          # define unicode &nbsp;
+        # value = temp[:temp.index(nbsp)]                                         # extract before &nbsp;
+        # log.debug(f"value: '{value}'")
+        value, unit = temp.split()                                              # split at &nbsp;
+        value = float(value.strip())                                            # convert stripped value to float
         log.debug(value)
 
         return value
