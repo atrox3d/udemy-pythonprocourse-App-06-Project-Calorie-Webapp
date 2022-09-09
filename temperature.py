@@ -4,7 +4,7 @@ import logging
 from selectorlib import Extractor
 
 logging.basicConfig(                                                            # configure root logger
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s | %(module)-15s | %(levelname)-10s | %(message)s",
     datefmt='%Y/%m/%d %H:%M:%S',
     # stream=sys.stdout
@@ -79,5 +79,8 @@ class Temperature:
 
 
 if __name__ == '__main__':                                                      # test the class
-    temperature = Temperature('italy', 'turin').get()
-    print(f'temperature: {temperature}')
+    if __name__ == '__main__':
+        country = input('Insert your country: ')
+        city = input('Insert your city: ')
+        temperature = Temperature(country=country, city=city).get()
+        print('Your location temperature is: ', temperature)

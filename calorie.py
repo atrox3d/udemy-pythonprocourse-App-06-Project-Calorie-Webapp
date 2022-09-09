@@ -20,7 +20,7 @@ class Calorie:
 if __name__ == '__main__':
     country = input('Insert your country: ')
     city = input('Insert your city: ')
-    temperature = Temperature(country='italy', city='turin').get()
+    temperature = Temperature(country=country, city=city).get()
     print('Your location temperature is: ', temperature)
 
     weight = float(input('Insert your weight: '))
