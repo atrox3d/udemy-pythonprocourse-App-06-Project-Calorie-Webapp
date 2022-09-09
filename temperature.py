@@ -19,8 +19,8 @@ class Temperature:
     """
 
     base_url = 'https://timeanddate.com/weather'                                # class variables
-    json_headers_path = 'headers_for_scraping.json'
-    yaml_path = 'temperature.yaml'
+    json_headers_path = 'files/headers_for_scraping.json'
+    yaml_path = 'files/temperature.yaml'
 
     def __init__(self, country, city):
         self.country = country
