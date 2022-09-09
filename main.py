@@ -19,7 +19,18 @@ class CaloriesformPage(MethodView):
     template = 'calories_form_page.html'
 
     def get(self):
-        return render_template(self.template)
+        return render_template(self.template, caloriesform=CaloriesForm())
+
+
+class CaloriesForm(Form):
+    country = StringField('Country: ', default='italy')
+    city = StringField('City: ', default='turin')
+
+    weight = StringField('Weight: ', default='95')
+    height = StringField('Height: ', default='175')
+    age = StringField('Age: ', default='50')
+
+    button = SubmitField('Submit')
 
 
 app.add_url_rule(
