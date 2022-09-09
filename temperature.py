@@ -79,8 +79,7 @@ class Temperature:
 
 
 if __name__ == '__main__':                                                      # test the class
-    if __name__ == '__main__':
-        country = input('Insert your country: ')
-        city = input('Insert your city: ')
-        temperature = Temperature(country=country, city=city).get()
-        print('Your location temperature is: ', temperature)
+    country = input('Insert your country: ')
+    city = input('Insert your city: ')
+    temperature = Temperature(country=country, city=city).get()
+    print('Your location temperature is: ', temperature)
